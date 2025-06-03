@@ -16,6 +16,8 @@
 #include "Bar.h"
 #include "Material.h"
 #include "Node.h"
+#include "CKirchhoffPlate.h"
+#include "PlateMaterial.h"
 
 using namespace std;
 

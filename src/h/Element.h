@@ -12,10 +12,16 @@
 
 #include "Node.h"
 #include "Material.h"
+#include "PlateMaterial.h"
 
 using namespace std;
 
-template <class type> void clear( type* a, unsigned int N );	// Clear an array
+template <typename type>
+void clear(type* a, unsigned int N) {
+    for (unsigned int i = 0; i < N; i++) {
+        a[i] = static_cast<type>(0); // 或者直接 a[i] = 0;
+    }
+}
 
 //!	Element base class
 /*!	All type of element classes should be derived from this base class */

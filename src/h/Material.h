@@ -11,7 +11,7 @@
 #pragma once
 
 #include "Outputter.h"
-
+#include <Eigen/Dense>
 using namespace std;
 
 //!	Material base class which only define one data member
@@ -35,6 +35,18 @@ public:
 //!	Write material data to Stream
     virtual void Write(COutputter& output) = 0;
 
+	// 用于 Kirchhoff 板单元的函数：声明为虚函数 + 默认实现（抛异常）
+    virtual Eigen::Matrix3d GetFlexuralMatrix() const {
+        throw std::runtime_error("GetFlexuralMatrix() not supported by this material.");
+    }
+
+    virtual double GetThickness() const {
+        throw std::runtime_error("GetThickness() not supported by this material.");
+    }
+
+    virtual Eigen::Matrix3d GetstressMatrix() const {
+        throw std::runtime_error("GetstressMatrix() not supported by this material.");
+    }
 };
 
 //!	Material class for bar element

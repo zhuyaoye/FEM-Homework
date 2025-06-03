@@ -10,15 +10,11 @@
 
 #include "Domain.h"
 #include "Material.h"
+#include "PlateMaterial.h"
 
 using namespace std;
 
-//	Clear an array
-template <class type> void clear( type* a, unsigned int N )
-{
-	for (unsigned int i = 0; i < N; i++)
-		a[i] = 0;
-}
+
 
 CDomain* CDomain::_instance = nullptr;
 

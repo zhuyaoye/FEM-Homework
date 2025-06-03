@@ -161,6 +161,9 @@ void COutputter::OutputElementInfo()
 			case ElementTypes::Bar: // Bar element
 				OutputBarElements(EleGrp);
 				break;
+			case ElementTypes::Plate:
+				OutputPlateElements(EleGrp);  // 👈 新增 Plate 元素输出函数
+				break;
 		    default:
 		        *this << ElementType << " has not been implemented yet." << endl;
 		        break;
@@ -211,6 +214,49 @@ void COutputter::OutputBarElements(unsigned int EleGrp)
     }
 
 	*this << endl;
+}
+
+
+void COutputter::OutputPlateElements(unsigned int EleGrp)
+{
+    CDomain* FEMData = CDomain::GetInstance();
+
+    CElementGroup& ElementGroup = FEMData->GetEleGrpList()[EleGrp];
+    unsigned int NUMMAT = ElementGroup.GetNUMMAT();
+
+    *this << " M A T E R I A L   D E F I N I T I O N   F O R   P L A T E S" << endl << endl;
+    *this << " NUMBER OF DIFFERENT SETS OF MATERIAL" << endl;
+    *this << " AND PLATE CONSTANTS . . . .( NPAR(3) ) . . =" << setw(5) << NUMMAT << endl << endl;
+
+    *this << "  SET       YOUNG'S     POISSON'S     PLATE" << endl
+          << " NUMBER     MODULUS       RATIO       THICKNESS" << endl
+          << "               E              NU           h" << endl;
+
+    *this << setiosflags(ios::scientific) << setprecision(5);
+
+    // Loop over all material property sets
+    for (unsigned int mset = 0; mset < NUMMAT; mset++)
+    {
+        *this << setw(5) << mset + 1;
+        ElementGroup.GetMaterial(mset).Write(*this);
+    }
+
+    *this << endl << endl
+          << " E L E M E N T   I N F O R M A T I O N   F O R   P L A T E S" << endl;
+
+    *this << " ELEMENT     NODE       NODE       NODE       NODE      MATERIAL" << endl
+          << " NUMBER      I          J          K          L        SET NUMBER" << endl;
+
+    unsigned int NUME = ElementGroup.GetNUME();
+
+    // Loop over all elements in the group
+    for (unsigned int Ele = 0; Ele < NUME; Ele++)
+    {
+        *this << setw(5) << Ele + 1;
+        ElementGroup[Ele].Write(*this);
+    }
+
+    *this << endl;
 }
 
 //	Print load data
@@ -298,6 +344,32 @@ void COutputter::OutputElementStress()
 
 				break;
 
+			case ElementTypes::Plate:
+				
+				*this << "  ELEMENT         GAUSS PT       Mx       My       Mxy\n";
+
+				for (unsigned int Ele = 0; Ele < NUME; Ele++)
+				{
+					CElement& Element = EleGrp[Ele];
+
+					double stress[12];  // 4 Gauss points × 3 components
+					Element.ElementStress(stress, Displacement);
+					
+					for (int gp = 0; gp < 4; ++gp)
+					{
+						*this << setw(6) << Ele + 1
+							<< setw(14) << gp + 1  // Gauss point 1 ~ 4
+							<< setw(16) << stress[3 * gp + 0]   // sigma_xx
+							<< setw(16) << stress[3 * gp + 1]   // sigma_yy
+							<< setw(16) << stress[3 * gp + 2]   // sigma_xy
+							<< endl;
+					}
+					
+				}
+
+				*this << endl;
+
+				break;
 			default: // Invalid element type
 				cerr << "*** Error *** Elment type " << ElementType
 					<< " has not been implemented.\n\n";
