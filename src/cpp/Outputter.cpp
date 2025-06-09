@@ -70,10 +70,12 @@ void COutputter::OutputHeading()
 	PrintTime(timeinfo, *this);
 }
 
-//	Print nodal data // CSJ modified
+//	Print nodal data
 void COutputter::OutputNodeInfo()
 {
 	CDomain* FEMData = CDomain::GetInstance();
+
+	CNode* NodeList = FEMData->GetNodeList();
 
 	*this << "C O N T R O L   I N F O R M A T I O N" << endl
 		  << endl;
@@ -84,90 +86,42 @@ void COutputter::OutputNodeInfo()
 	unsigned int NUMEG = FEMData->GetNUMEG();
 	unsigned int NLCASE = FEMData->GetNLCASE();
 	unsigned int MODEX = FEMData->GetMODEX();
-	unsigned int DOF_INDEX = FEMData->GetDOF_INDEX(); // CSJ
-
-	CNode* NodeList = nullptr; 
-	CBeamNode* NodeListBeam = nullptr;
-    if (DOF_INDEX == 0)
-    {
-        NodeList = FEMData->GetNodeList();
-    }
-    else
-    {
-        NodeListBeam = FEMData->GetNodelistBeam(); 
-    }
 
 	*this << "      NUMBER OF NODAL POINTS . . . . . . . . . . (NUMNP)  =" << setw(6) << NUMNP << endl;
 	*this << "      NUMBER OF ELEMENT GROUPS . . . . . . . . . (NUMEG)  =" << setw(6) << NUMEG << endl;
 	*this << "      NUMBER OF LOAD CASES . . . . . . . . . . . (NLCASE) =" << setw(6) << NLCASE << endl;
 	*this << "      SOLUTION MODE  . . . . . . . . . . . . . . (MODEX)  =" << setw(6) << MODEX << endl;
 	*this << "         EQ.0, DATA CHECK" << endl
-		  << "         EQ.1, EXECUTION" << endl;
-	*this << " Index of DOF . . . . . . . . . . . . . . . . . . (DOF_INDEX) =" << setw(6) << DOF_INDEX << endl;
-	*this << " EQ.0, THE NODE'S DEGREE OF FREEDOM IS 3" << endl
-		  << " EQ.1, THE NODE'S DEGREE OF FREEDOM IS 6" << endl
+		  << "         EQ.1, EXECUTION" << endl
 		  << endl;
 
 	*this << " N O D A L   P O I N T   D A T A" << endl << endl;
 	*this << "    NODE       BOUNDARY                         NODAL POINT" << endl
 		  << "   NUMBER  CONDITION  CODES                     COORDINATES" << endl;
 
-	if(DOF_INDEX == 0)
-	{
-		for (unsigned int np = 0; np < NUMNP; np++)
-			NodeList[np].Write(*this);
-	}
-	else
-	{
-		for (unsigned int np = 0; np < NUMNP; np++)
-			NodeListBeam[np].Write(*this);
-	}
+	for (unsigned int np = 0; np < NUMNP; np++)
+		NodeList[np].Write(*this);
+
 	*this << endl;
 }
 
 //	Output equation numbers
-void COutputter::OutputEquationNumber() // CSJ modified
+void COutputter::OutputEquationNumber()
 {
 	CDomain* FEMData = CDomain::GetInstance();
 	unsigned int NUMNP = FEMData->GetNUMNP();
-	unsigned int DOF_INDEX = FEMData->GetDOF_INDEX();
 
-	CNode* NodeList = nullptr; 
-	CBeamNode* NodeListBeam = nullptr;
-    if (DOF_INDEX == 0)
-    {
-        NodeList = FEMData->GetNodeList();
-    }
-    else
-    {
-        NodeListBeam = FEMData->GetNodelistBeam(); 
-    }
+	CNode* NodeList = FEMData->GetNodeList();
 
-	if(DOF_INDEX == 0)
-	{
-		*this << " EQUATION NUMBERS" << endl
-			  << endl;
-		*this << "   NODE NUMBER   DEGREES OF FREEDOM" << endl;
-		*this << "        N           X    Y    Z" << endl;
+	*this << " EQUATION NUMBERS" << endl
+		  << endl;
+	*this << "   NODE NUMBER   DEGREES OF FREEDOM" << endl;
+	*this << "        N           X    Y    Z" << endl;
 
-		for (unsigned int np = 0; np < NUMNP; np++) // Loop over for all node
-			NodeList[np].WriteEquationNo(*this);
+	for (unsigned int np = 0; np < NUMNP; np++) // Loop over for all node
+		NodeList[np].WriteEquationNo(*this);
 
-		*this << endl;
-	}
-	else
-	{
-		*this << " EQUATION NUMBERS" << endl
-			  << endl;
-		*this << "   NODE NUMBER                DEGREES OF FREEDOM" << endl;
-		*this << "        N           X    Y    Z    THETA_X    THETA_Y    THETA_Z" << endl;
-
-		for (unsigned int np = 0; np < NUMNP; np++) // Loop over for all node
-			NodeListBeam[np].WriteEquationNo(*this);
-
-		*this << endl;
-	}
-	
+	*this << endl;
 }
 
 //	Output element data
@@ -334,13 +288,10 @@ void COutputter::OutputLoadInfo()
 }
 
 //	Print nodal displacement
-void COutputter::OutputNodalDisplacement() // CSJ modified
+void COutputter::OutputNodalDisplacement()
 {
 	CDomain* FEMData = CDomain::GetInstance();
 	CNode* NodeList = FEMData->GetNodeList();
-	CBeamNode* NodeListBeam = FEMData->GetNodelistBeam();
-
-	unsigned int DOF_INDEX = FEMData->GetDOF_INDEX();
 	double* Displacement = FEMData->GetDisplacement();
 
 	*this << setiosflags(ios::scientific);
@@ -349,16 +300,8 @@ void COutputter::OutputNodalDisplacement() // CSJ modified
 		  << endl;
 	*this << "  NODE           X-DISPLACEMENT    Y-DISPLACEMENT    Z-DISPLACEMENT     THETA_X     THETA_Y     THETA_Z" << endl; // CSJ
 
-	if(DOF_INDEX == 0)
-	{
-		for (unsigned int np = 0; np < FEMData->GetNUMNP(); np++)
-			NodeList[np].WriteNodalDisplacement(*this, Displacement);
-	}
-	else
-	{
-		for (unsigned int np = 0; np < FEMData->GetNUMNP(); np++)
-			NodeListBeam[np].WriteNodalDisplacement(*this, Displacement);
-	}
+	for (unsigned int np = 0; np < FEMData->GetNUMNP(); np++)
+		NodeList[np].WriteNodalDisplacement(*this, Displacement);
 
 	*this << endl;
 }

@@ -47,16 +47,10 @@ private:
 
 //!	List of all nodes in the domain
 	CNode* NodeList;
-	CBeamNode* NodeListBeam; //CSJ
 
 //!	Total number of element groups.
 /*! An element group consists of a convenient collection of elements with same type */
 	unsigned int NUMEG;
-
-//! The index of DOF
-/*!		0: DOF==3
-		1: DOF==6*/ 
-	unsigned int DOF_INDEX; // CSJ
 
 //! Element group list
     CElementGroup* EleGrpList;
@@ -137,7 +131,6 @@ public:
 
 //!	Return the node list
 	inline CNode* GetNodeList() { return NodeList; }
-	inline CBeamNode* GetNodelistBeam(){ return NodeListBeam; } //CSJ
 
 //!	Return total number of element groups
 	inline unsigned int GetNUMEG() { return NUMEG; }
@@ -159,9 +152,6 @@ public:
 
 //!	Return the list of load cases
 	inline CLoadCaseData* GetLoadCases() { return LoadCases; }
-
-//! Return the Index of DOF
-	inline unsigned int GetDOF_INDEX(){return DOF_INDEX; } // CSJ
 
 //!	Return pointer to the banded stiffness matrix
 	inline CSkylineMatrix<double>* GetStiffnessMatrix() { return StiffnessMatrix; }

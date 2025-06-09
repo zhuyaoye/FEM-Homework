@@ -15,8 +15,8 @@ CB31::CB31()
 {
     NEN_ = 2;    // 2 nodes
     ND_ = 12;    // 6 DOF per node × 2
-    beamnodes_ = new CBeamNode*[NEN_];
-    LocationMatrix_ = new unsigned int[ND_]; //CSJ
+    nodes_ = new CNode*[NEN_];
+    LocationMatrix_ = new unsigned int[ND_];
     ElementMaterial_ = nullptr;
 }
 
@@ -26,11 +26,6 @@ CB31::~CB31()
 }
 
 bool CB31::Read(ifstream& Input, CMaterial* MaterialSets, CNode* NodeList)
-{
-    return true;
-}
-
-bool CB31::ReadBeam(ifstream& Input, CMaterial* MaterialSets, CBeamNode* NodeListBeam)
 {
     unsigned int N1, N2, MSet;
     std::string line;
@@ -42,8 +37,8 @@ bool CB31::ReadBeam(ifstream& Input, CMaterial* MaterialSets, CBeamNode* NodeLis
     if (!(iss >> N1 >> N2 >> MSet))
         return false;  // 读取节点和材料集失败
     
-    beamnodes_[0] = &NodeListBeam[N1 - 1];
-    beamnodes_[1] = &NodeListBeam[N2 - 1];
+    nodes_[0] = &NodeList[N1 - 1];
+    nodes_[1] = &NodeList[N2 - 1];
 
     ElementMaterial_ = dynamic_cast<CB31Material*>(MaterialSets) + MSet - 1;
 
@@ -66,20 +61,20 @@ bool CB31::ReadBeam(ifstream& Input, CMaterial* MaterialSets, CBeamNode* NodeLis
 // Write element info
 void CB31::Write(COutputter& output)
 {
-    output << setw(11) << beamnodes_[0]->NodeNumber
-           << setw(9)  << beamnodes_[1]->NodeNumber
+    output << setw(11) << nodes_[0]->NodeNumber
+           << setw(9)  << nodes_[1]->NodeNumber
            << setw(12) << ElementMaterial_->nset << endl;
 }
 
 // Compute element stiffness matrix (12×12)
 void CB31::ElementStiffness(double* Matrix)
 {
-     clear(Matrix, SizeOfStiffnessMatrix());
+      clear(Matrix, SizeOfStiffnessMatrix());
 
     //	Calculate bar length
 	double DX[3];		//	dx = x2-x1, dy = y2-y1, dz = z2-z1
 	for (unsigned int i = 0; i < 3; i++)
-		DX[i] = beamnodes_[1]->XYZ[i] - beamnodes_[0]->XYZ[i];
+		DX[i] = nodes_[1]->XYZ[i] - nodes_[0]->XYZ[i];
 
 	double L2 = DX[0] *  DX[0] + DX[1] * DX[1] + DX[2] * DX[2];
 	double L = sqrt(L2);

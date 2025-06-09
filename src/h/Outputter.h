@@ -75,17 +75,8 @@ public:
 	template <typename T>
 	COutputter& operator<<(const T& item) 
 	{
-		try
-		{
-			std::cout << item;
-			OutputFile << item;
-		}
-		catch (const std::exception& e)
-		{
-			std::cerr << "Error in operator<<: " << e.what() << std::endl;
-			// 可以选择抛出异常或者进行其他错误处理
-			throw;
-		}
+		std::cout << item;
+		OutputFile << item;
 		return *this;
 	}
 

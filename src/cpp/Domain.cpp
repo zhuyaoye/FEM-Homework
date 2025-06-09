@@ -11,8 +11,6 @@
 #include "Domain.h"
 #include "Material.h"
 
-#include <string>
-#include <sstream>
 #include "B31Material.h" // CSJ
 
 using namespace std;
@@ -34,8 +32,7 @@ CDomain::CDomain()
 
 	NUMNP = 0;
 	NodeList = nullptr;
-	NodeListBeam = nullptr; // CSJ
-
+	
 	NUMEG = 0;
 	EleGrpList = nullptr;
 	
@@ -53,7 +50,6 @@ CDomain::CDomain()
 CDomain::~CDomain()
 {
 	delete [] NodeList;
-	delete [] NodeListBeam; // CSJ
 
 	delete [] EleGrpList;
 
@@ -90,36 +86,10 @@ bool CDomain::ReadData(string FileName, string OutFile)
 	Input.getline(Title, 256);
 	Output->OutputHeading();
 
-	// 从输入流读取一行文本
-	bool hasDOF_INDEX = false;
-	std::string line;
-	if (std::getline(Input, line)) {
-		// 创建字符串流，用于解析读取的行
-		std::istringstream iss(line);
-		
-		// 尝试读取前四个必选参数
-		if (iss >> NUMNP >> NUMEG >> NLCASE >> MODEX) {
-			// 尝试读取可选的第五个参数
-			if (iss >> DOF_INDEX) {
-				// 成功读取了全部五个参数
-				hasDOF_INDEX = true;
-			} else {
-				// 只有四个参数，DOF_INDEX使用默认值
-				hasDOF_INDEX = false;
-				DOF_INDEX = 0; // 设置默认值
-				iss.clear(); // 清除错误标志
-			}
-			
-			// 检查行中是否有多余的数据
-			char extra;
-			if (iss >> extra) {
-				std::cerr << "警告: 行中包含多余的数据!" << std::endl;
-			}
-		} else {
-			std::cerr << "错误: 无法解析必要的四个参数!" << std::endl;
-		}
-	}
-	//	Read nodal point data
+//	Read the control line
+	Input >> NUMNP >> NUMEG >> NLCASE >> MODEX;
+
+//	Read nodal point data
 	if (ReadNodalPoints())
         Output->OutputNodeInfo();
     else
@@ -147,93 +117,46 @@ bool CDomain::ReadData(string FileName, string OutFile)
 //	Read nodal point data
 bool CDomain::ReadNodalPoints()
 {
-	if(DOF_INDEX == 0)
-	{
-		delete[] NodeListBeam;
-	//	Read nodal point data lines
-		NodeList = new CNode[NUMNP];
 
-	//	Loop over for all nodal points
-		for (unsigned int np = 0; np < NUMNP; np++)
-		{
-			if (!NodeList[np].Read(Input))
-				return false;
-		
-			if (NodeList[np].NodeNumber != np + 1)
-			{
-				cerr << "*** Error *** Nodes must be inputted in order !" << endl
-				<< "   Expected node number : " << np + 1 << endl
-				<< "   Provided node number : " << NodeList[np].NodeNumber << endl;
-			
-				return false;
-			}
-		}
+//	Read nodal point data lines
+	NodeList = new CNode[NUMNP];
 
-		return true;
-	}
-	else
-	{
-		delete[] NodeList;
-	//	Read nodal point data lines
-		NodeListBeam = new CBeamNode[NUMNP];
+//	Loop over for all nodal points
+	for (unsigned int np = 0; np < NUMNP; np++)
+    {
+		if (!NodeList[np].Read(Input))
+			return false;
+    
+        if (NodeList[np].NodeNumber != np + 1)
+        {
+            cerr << "*** Error *** Nodes must be inputted in order !" << endl
+            << "   Expected node number : " << np + 1 << endl
+            << "   Provided node number : " << NodeList[np].NodeNumber << endl;
+        
+            return false;
+        }
+    }
 
-	//	Loop over for all nodal points
-		for (unsigned int np = 0; np < NUMNP; np++)
-		{
-			if (!NodeListBeam[np].Read(Input))
-				return false;
-		
-			if (NodeListBeam[np].NodeNumber != np + 1)
-			{
-				cerr << "*** Error *** Nodes must be inputted in order !" << endl
-				<< "   Expected node number : " << np + 1 << endl
-				<< "   Provided node number : " << NodeListBeam[np].NodeNumber << endl;
-			
-				return false;
-			}
-		}
-
-		return true;
-	}
+	return true;
 }
 
 //	Calculate global equation numbers corresponding to every degree of freedom of each node
-void CDomain::CalculateEquationNumber() // CSJmodified
+void CDomain::CalculateEquationNumber()
 {
 	NEQ = 0;
-	if (DOF_INDEX == 0)
+	for (unsigned int np = 0; np < NUMNP; np++)	// Loop over for all node
 	{
-		for (unsigned int np = 0; np < NUMNP; np++)	// Loop over for all node
+		for (unsigned int dof = 0; dof < CNode::NDF; dof++)	// Loop over for DOFs of node np
 		{
-			for (unsigned int dof = 0; dof < CNode::NDF; dof++)	// Loop over for DOFs of node np
+			if (NodeList[np].bcode[dof]) 
+				NodeList[np].bcode[dof] = 0;
+			else
 			{
-				if (NodeList[np].bcode[dof]) 
-					NodeList[np].bcode[dof] = 0;
-				else
-				{
-					NEQ++;
-					NodeList[np].bcode[dof] = NEQ;
-				}
+				NEQ++;
+				NodeList[np].bcode[dof] = NEQ;
 			}
 		}
 	}
-	else
-	{
-		for (unsigned int np = 0; np < NUMNP; np++)	// Loop over for all node
-		{
-			for (unsigned int dof = 0; dof < CBeamNode::NDF; dof++)	// Loop over for DOFs of node np
-			{
-				if (NodeListBeam[np].bcode[dof]) 
-					NodeListBeam[np].bcode[dof] = 0;
-				else
-				{
-					NEQ++;
-					NodeListBeam[np].bcode[dof] = NEQ;
-				}
-			}
-		}
-	}
-	
 }
 
 //	Read load case data
@@ -264,19 +187,15 @@ bool CDomain::ReadLoadCases()
 }
 
 // Read element data
-bool CDomain::ReadElements() // CSJ modified
+bool CDomain::ReadElements()
 {
     EleGrpList = new CElementGroup[NUMEG];
 
 //	Loop over for all element group
 	for (unsigned int EleGrp = 0; EleGrp < NUMEG; EleGrp++)
-	{
-		if (!EleGrpList[EleGrp].Read(Input))
-		{
-			return false;
-		}
-	}
-			
+        if (!EleGrpList[EleGrp].Read(Input))
+            return false;
+    
     return true;
 }
 
@@ -297,18 +216,9 @@ void CDomain::CalculateColumnHeights()
         {
             CElement& Element = ElementGrp[Ele];
 
-            // Generate location matrix CSJ modified
-			if(DOF_INDEX == 0)
-			{
-				Element.GenerateLocationMatrix();
-			}
-            else
-			{
-				Element.GenerateLocationMatrixBeam();
-			}
-        
-		
-	
+            // Generate location matrix
+            Element.GenerateLocationMatrix();
+            
 #ifdef _DEBUG_
             unsigned int* LocationMatrix = Element.GetLocationMatrix();
             
@@ -396,28 +306,13 @@ bool CDomain::AssembleForce(unsigned int LoadCase)
     clear(Force, NEQ);
 
 //	Loop over for all concentrated loads in load case LoadCase
-// CSJ modified
-	if(DOF_INDEX == 0)
+	for (unsigned int lnum = 0; lnum < LoadData->nloads; lnum++)
 	{
-		for (unsigned int lnum = 0; lnum < LoadData->nloads; lnum++)
-		{
-			unsigned int dof = NodeList[LoadData->node[lnum] - 1].bcode[LoadData->dof[lnum] - 1];
-			
-			if(dof) // The DOF is activated
-				Force[dof - 1] += LoadData->load[lnum];
-		}
+		unsigned int dof = NodeList[LoadData->node[lnum] - 1].bcode[LoadData->dof[lnum] - 1];
+        
+        if(dof) // The DOF is activated
+            Force[dof - 1] += LoadData->load[lnum];
 	}
-	else
-	{
-		for (unsigned int lnum = 0; lnum < LoadData->nloads; lnum++)
-		{
-			unsigned int dof = NodeListBeam[LoadData->node[lnum] - 1].bcode[LoadData->dof[lnum] - 1];
-			
-			if(dof) // The DOF is activated
-				Force[dof - 1] += LoadData->load[lnum];
-		}
-	}
-	
 
 	return true;
 }

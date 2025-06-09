@@ -133,9 +133,3 @@ void CBar::ElementStress(double* stress, double* Displacement)
 			*stress += S[i] * Displacement[LocationMatrix_[i]-1];
 	}
 }
-
-//! CSJ Added
-bool CBar::ReadBeam(ifstream& Input, CMaterial* MaterialSets, CBeamNode* NodeListBeam)
-{
-	return true;
-}

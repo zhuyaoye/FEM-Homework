@@ -28,9 +28,6 @@ public:
 //!	Read element data from stream Input
 	virtual bool Read(ifstream& Input, CMaterial* MaterialSets, CNode* NodeList);
 
-//! CSJ Added
-	virtual bool ReadBeam(ifstream& Input, CMaterial* MaterialSets, CBeamNode* NodeListBeam);
-
 //!	Write element data to stream
 	virtual void Write(COutputter& output);
 

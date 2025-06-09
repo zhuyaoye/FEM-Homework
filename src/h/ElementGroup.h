@@ -42,9 +42,6 @@ private:
     //! List of all nodes in the domain, obtained from CDomain object
     static CNode* NodeList_;
 
-    //! Beam Nodes' List. Added by CSJ
-    static CBeamNode* NodeListBeam_;
-
     //! Element type of this group
     ElementTypes ElementType_;
 

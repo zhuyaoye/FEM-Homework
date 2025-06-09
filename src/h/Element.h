@@ -29,9 +29,6 @@ protected:
 //!	Nodes of the element
 	CNode** nodes_;
 
-//! Nodes of the Beam Element--Added by CSJ
-    CBeamNode** beamnodes_;
-
 //!	Material of the element
 	CMaterial* ElementMaterial_;	//!< Pointer to an element of MaterialSetList[][]
     
@@ -61,9 +58,6 @@ public:
 //!	Read element data from stream Input
 	virtual bool Read(ifstream& Input, CMaterial* MaterialSets, CNode* NodeList) = 0;
 
-//! Read **beam** element data from stream Input added by CSJ
-    virtual bool ReadBeam(ifstream& Input, CMaterial* MaterialSets, CBeamNode* NodeListBeam) = 0;
-
 //!	Write element data to stream
 	virtual void Write(COutputter& output) = 0;
 
@@ -75,15 +69,6 @@ public:
         for (unsigned int N = 0; N < NEN_; N++)
             for (unsigned int D = 0; D < CNode::NDF; D++)
                 LocationMatrix_[i++] = nodes_[N]->bcode[D];
-    }
-
-// Location Matrix for Beam: CSJ Added
-    virtual void GenerateLocationMatrixBeam()
-    {
-        unsigned int i = 0;
-        for (unsigned int N = 0; N < NEN_; N++)
-            for (unsigned int D = 0; D < CBeamNode::NDF; D++)
-                LocationMatrix_[i++] = beamnodes_[N]->bcode[D];
     }
 
 //! Return the size of the element stiffness matrix (stored as an array column by column)

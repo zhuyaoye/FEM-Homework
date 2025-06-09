@@ -12,7 +12,6 @@
 #include "Domain.h"
 
 CNode* CElementGroup::NodeList_ = nullptr;
-CBeamNode* CElementGroup::NodeListBeam_ = nullptr; // CSJ Added
 
 //! Constructor
 CElementGroup::CElementGroup()
@@ -22,18 +21,7 @@ CElementGroup::CElementGroup()
         CDomain* FEMData = CDomain::GetInstance();
         NodeList_ = FEMData->GetNodeList();
     }
-
-    if (!NodeList_) {
-        std::cerr << "Error: NodeList_ is null after assignment!" << std::endl;
-        // 考虑是否需要退出或采取其他措施
-    }
-
-    if(!NodeListBeam_) // CSJ Added
-    {
-        CDomain* FEMData = CDomain::GetInstance();
-        NodeListBeam_ = FEMData->GetNodelistBeam();
-    }
-
+    
     ElementType_ = ElementTypes::UNDEFINED;
     
     NUME_ = 0;
@@ -167,17 +155,8 @@ bool CElementGroup::Read(ifstream& Input)
             return false;
         }
 
-        if(ElementType_ == 5) //CSJ modified
-        {
-            if (!(*this)[Ele].ReadBeam(Input, MaterialList_, NodeListBeam_))
-                return false;
-        }
-        else if(ElementType_ == 1 || ElementType_ == 1 || ElementType_ == 3 || ElementType_ == 4||ElementType_ == 6)
-        {
-            if (!(*this)[Ele].Read(Input, MaterialList_, NodeList_))
+        if (!(*this)[Ele].Read(Input, MaterialList_, NodeList_))
             return false;
-        }
-
     }
 
     return true;

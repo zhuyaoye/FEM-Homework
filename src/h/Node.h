@@ -11,9 +11,6 @@
 #pragma once
 
 #include "Outputter.h"
-#include <iostream>
-#include <iomanip>
-#include <fstream>
 
 using namespace std;
 
@@ -21,49 +18,36 @@ using namespace std;
 class CNode
 {
 public:
-    //!	Maximum number of degrees of freedom per node
-    /*!	For 3D bar and solid elements, NDF = 3. For 3D beam or shell elements, NDF = 5 or 6 */
-    const static unsigned int NDF = 3;
 
-    //!	Node numer
-    unsigned int NodeNumber;
+//!	Maximum number of degrees of freedom per node
+/*!	For 3D bar and solid elements, NDF = 3. For 3D beam or shell elements, NDF = 5 or 6 */
+	const static unsigned int NDF = 6;
 
-    //!	x, y and z coordinates of the node
-    double XYZ[3];
+//!	Node numer
+	unsigned int NodeNumber;
 
-    //!	Boundary code of each degree of freedom of the node
-    /*!		0: The corresponding degree of freedom is active (defined in the global system) */
-    /*!		1: The corresponding degree of freedom in nonactive (not defined) */
-    /*!	After call Domain::CalculateEquationNumber(), bcode stores the global equation number */
-    /*!	corresponding to each degree of freedom of the node */
-    unsigned int bcode[NDF];
+//!	x, y and z coordinates of the node
+	double XYZ[3];
 
-    //!	Constructor
-    CNode(double X = 0, double Y = 0, double Z = 0);
+//!	Boundary code of each degree of freedom of the node
+/*!		0: The corresponding degree of freedom is active (defined in the global system) */
+/*!		1: The corresponding degree of freedom in nonactive (not defined) */
+/*!	After call Domain::CalculateEquationNumber(), bcode stores the global equation number */
+/*!	corresponding to each degree of freedom of the node */
+	unsigned int bcode[NDF];
 
-    //!	Read nodal point data from stream Input
-    virtual bool Read(ifstream& Input);
+//!	Constructor
+	CNode(double X = 0, double Y = 0, double Z = 0);
 
-    //!	Output nodal point data to stream
-    virtual void Write(COutputter& output);
+//!	Read nodal point data from stream Input
+	bool Read(ifstream& Input);
 
-    //!	Output equation numbers of nodal point to stream OutputFile
-    virtual void WriteEquationNo(COutputter& OutputFile);
+//!	Output nodal point data to stream
+	void Write(COutputter& output);
 
-    //!	Write nodal displacement
-    virtual void WriteNodalDisplacement(COutputter& OutputFile, double* Displacement);
-};
+//!	Output equation numbers of nodal point to stream OutputFile
+	void WriteEquationNo(COutputter& OutputFile);
 
-//! CSJ added
-class CBeamNode : public CNode
-{
-public:
-    const static unsigned int NDF = 6;
-    unsigned int bcode[NDF];
-
-    CBeamNode(double X = 0, double Y = 0, double Z = 0);
-    bool Read(ifstream& Input) override;
-    void Write(COutputter& output) override;
-    void WriteEquationNo(COutputter& OutputFile) override;
-    void WriteNodalDisplacement(COutputter& OutputFile, double* Displacement) override;
+//!	Write nodal displacement
+	void WriteNodalDisplacement(COutputter& OutputFile, double* Displacement);
 };
