@@ -1,0 +1,3 @@
+C:/Users/yfj04/Desktop/yinfj22/FEM/STAPpp-master/src/build/CMakeFiles/stap++.dir
+C:/Users/yfj04/Desktop/yinfj22/FEM/STAPpp-master/src/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/yfj04/Desktop/yinfj22/FEM/STAPpp-master/src/build/CMakeFiles/ZERO_CHECK.dir

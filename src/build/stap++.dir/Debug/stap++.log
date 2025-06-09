@@ -1,0 +1,11 @@
+﻿ElementGroup.obj : error LNK2019: 无法解析的外部符号 "public: __cdecl CT3::CT3(void)" (??0CT3@@QEAA@XZ)，函数 "public: void __cdecl CElementGroup::AllocateElements(unsigned __int64)" (?AllocateElements@CElementGroup@@QEAAX_K@Z) 中引用了该符号
+ElementGroup.obj : error LNK2019: 无法解析的外部符号 "public: virtual __cdecl CT3::~CT3(void)" (??1CT3@@UEAA@XZ)，函数 "public: void __cdecl CElementGroup::AllocateElements(unsigned __int64)" (?AllocateElements@CElementGroup@@QEAAX_K@Z) 中引用了该符号
+ElementGroup.obj : error LNK2019: 无法解析的外部符号 "public: __cdecl CQ4::CQ4(void)" (??0CQ4@@QEAA@XZ)，函数 "public: void __cdecl CElementGroup::AllocateElements(unsigned __int64)" (?AllocateElements@CElementGroup@@QEAAX_K@Z) 中引用了该符号
+ElementGroup.obj : error LNK2019: 无法解析的外部符号 "public: virtual __cdecl CQ4::~CQ4(void)" (??1CQ4@@UEAA@XZ)，函数 "public: void __cdecl CElementGroup::AllocateElements(unsigned __int64)" (?AllocateElements@CElementGroup@@QEAAX_K@Z) 中引用了该符号
+ElementGroup.obj : error LNK2019: 无法解析的外部符号 "public: __cdecl CQ8::CQ8(void)" (??0CQ8@@QEAA@XZ)，函数 "public: void __cdecl CElementGroup::AllocateElements(unsigned __int64)" (?AllocateElements@CElementGroup@@QEAAX_K@Z) 中引用了该符号
+ElementGroup.obj : error LNK2019: 无法解析的外部符号 "public: virtual __cdecl CQ8::~CQ8(void)" (??1CQ8@@UEAA@XZ)，函数 "public: void __cdecl CElementGroup::AllocateElements(unsigned __int64)" (?AllocateElements@CElementGroup@@QEAAX_K@Z) 中引用了该符号
+ElementGroup.obj : error LNK2001: 无法解析的外部符号 "public: virtual bool __cdecl C2DMaterial::Read(class std::basic_ifstream<char,struct std::char_traits<char> > &)" (?Read@C2DMaterial@@UEAA_NAEAV?$basic_ifstream@DU?$char_traits@D@std@@@std@@@Z)
+ElementGroup.obj : error LNK2001: 无法解析的外部符号 "public: virtual void __cdecl C2DMaterial::Write(class COutputter &)" (?Write@C2DMaterial@@UEAAXAEAVCOutputter@@@Z)
+Outputter.obj : error LNK2019: 无法解析的外部符号 "public: void __cdecl CQ4::ElementGauss(double *)" (?ElementGauss@CQ4@@QEAAXPEAN@Z)，函数 "public: void __cdecl COutputter::OutputElementStress(void)" (?OutputElementStress@COutputter@@QEAAXXZ) 中引用了该符号
+Outputter.obj : error LNK2019: 无法解析的外部符号 "public: void __cdecl CQ8::ElementGauss(double *)" (?ElementGauss@CQ8@@QEAAXPEAN@Z)，函数 "public: void __cdecl COutputter::OutputElementStress(void)" (?OutputElementStress@COutputter@@QEAAXXZ) 中引用了该符号
+C:\Users\yfj04\Desktop\yinfj22\FEM\STAPpp-master\src\build\Debug\stap++.exe : fatal error LNK1120: 10 个无法解析的外部命令
