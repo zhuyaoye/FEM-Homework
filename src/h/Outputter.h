@@ -60,6 +60,8 @@ public:
 	void OutputPlateElements(unsigned int EleGrp);
 //! Output beam element data
 	void OutputB31Elements(unsigned int EleGrp); // CSJ
+//!	Output bar element data
+    void OutputH8Elements(unsigned int EleGrp);
 
 //!	Output load data 
 	void OutputLoadInfo(); 

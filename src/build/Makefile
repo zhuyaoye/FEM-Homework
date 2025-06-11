@@ -201,6 +201,54 @@ cpp/Bar.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/stap++.dir/build.make CMakeFiles/stap++.dir/cpp/Bar.cpp.s
 .PHONY : cpp/Bar.cpp.s
 
+cpp/C3D8.o: cpp/C3D8.cpp.o
+.PHONY : cpp/C3D8.o
+
+# target to build an object file
+cpp/C3D8.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stap++.dir/build.make CMakeFiles/stap++.dir/cpp/C3D8.cpp.o
+.PHONY : cpp/C3D8.cpp.o
+
+cpp/C3D8.i: cpp/C3D8.cpp.i
+.PHONY : cpp/C3D8.i
+
+# target to preprocess a source file
+cpp/C3D8.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stap++.dir/build.make CMakeFiles/stap++.dir/cpp/C3D8.cpp.i
+.PHONY : cpp/C3D8.cpp.i
+
+cpp/C3D8.s: cpp/C3D8.cpp.s
+.PHONY : cpp/C3D8.s
+
+# target to generate assembly for a file
+cpp/C3D8.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stap++.dir/build.make CMakeFiles/stap++.dir/cpp/C3D8.cpp.s
+.PHONY : cpp/C3D8.cpp.s
+
+cpp/C3D8Material.o: cpp/C3D8Material.cpp.o
+.PHONY : cpp/C3D8Material.o
+
+# target to build an object file
+cpp/C3D8Material.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stap++.dir/build.make CMakeFiles/stap++.dir/cpp/C3D8Material.cpp.o
+.PHONY : cpp/C3D8Material.cpp.o
+
+cpp/C3D8Material.i: cpp/C3D8Material.cpp.i
+.PHONY : cpp/C3D8Material.i
+
+# target to preprocess a source file
+cpp/C3D8Material.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stap++.dir/build.make CMakeFiles/stap++.dir/cpp/C3D8Material.cpp.i
+.PHONY : cpp/C3D8Material.cpp.i
+
+cpp/C3D8Material.s: cpp/C3D8Material.cpp.s
+.PHONY : cpp/C3D8Material.s
+
+# target to generate assembly for a file
+cpp/C3D8Material.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stap++.dir/build.make CMakeFiles/stap++.dir/cpp/C3D8Material.cpp.s
+.PHONY : cpp/C3D8Material.cpp.s
+
 cpp/CKirchhoffPlate.o: cpp/CKirchhoffPlate.cpp.o
 .PHONY : cpp/CKirchhoffPlate.o
 
@@ -483,6 +531,12 @@ help:
 	@echo "... cpp/Bar.o"
 	@echo "... cpp/Bar.i"
 	@echo "... cpp/Bar.s"
+	@echo "... cpp/C3D8.o"
+	@echo "... cpp/C3D8.i"
+	@echo "... cpp/C3D8.s"
+	@echo "... cpp/C3D8Material.o"
+	@echo "... cpp/C3D8Material.i"
+	@echo "... cpp/C3D8Material.s"
 	@echo "... cpp/CKirchhoffPlate.o"
 	@echo "... cpp/CKirchhoffPlate.i"
 	@echo "... cpp/CKirchhoffPlate.s"

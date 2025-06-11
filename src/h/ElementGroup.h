@@ -21,6 +21,10 @@
 
 #include "B31.h" // CSJ
 #include "B31Material.h" //CSJ
+#include "C3D8.h"
+#include "C3D8Material.h"
+
+
 
 using namespace std;
 

@@ -307,6 +307,52 @@ void COutputter::OutputB31Elements(unsigned int EleGrp)
 	*this << endl;
 }
 
+
+
+void COutputter::OutputH8Elements(unsigned int EleGrp)
+{
+	CDomain* FEMData = CDomain::GetInstance();
+
+	CElementGroup& ElementGroup = FEMData->GetEleGrpList()[EleGrp];
+	unsigned int NUMMAT = ElementGroup.GetNUMMAT();
+
+	*this << " M A T E R I A L   D E F I N I T I O N" << endl
+		<< endl;
+	*this << " NUMBER OF DIFFERENT SETS OF MATERIAL" << endl;
+	*this << " AND ELASTIC PROPERTIES  . . . .( NPAR(3) ) . . =" << setw(5) << NUMMAT
+		<< endl
+		<< endl;
+
+	*this << "  SET       YOUNG'S     POISSON'S" << endl
+		<< " NUMBER     MODULUS        RATIO" << endl
+		<< "               E            nu" << endl;
+
+	*this << setiosflags(ios::scientific) << setprecision(5);
+
+	for (unsigned int mset = 0; mset < NUMMAT; mset++)
+	{
+		*this << setw(5) << mset + 1;
+		ElementGroup.GetMaterial(mset).Write(*this);
+	}
+
+	*this << endl << endl
+		<< " E L E M E N T   I N F O R M A T I O N" << endl;
+
+	*this << " ELEMENT     NODE     NODE     NODE     NODE     NODE     NODE     NODE     NODE       MATERIAL" << endl
+		<< " NUMBER-N      I        J        K        L        M        N        O        P       SET NUMBER" << endl;
+
+	unsigned int NUME = ElementGroup.GetNUME();
+
+	for (unsigned int Ele = 0; Ele < NUME; Ele++)
+	{
+		*this << setw(5) << Ele + 1;
+		ElementGroup[Ele].Write(*this);
+	}
+
+	*this << endl;
+}
+
+
 //	Print load data
 void COutputter::OutputLoadInfo()
 {
@@ -420,6 +466,38 @@ void COutputter::OutputElementStress()
 				break;
 			case ElementTypes::Beam: //B31 Element
 				// Write your codes here
+
+						case ElementTypes::H8:
+				*this << "  ELEMENT       VON MISES STRESS    PRINCIPAL STRESS (MAX)" << endl
+					<< "  NUMBER" << endl;
+
+				double stress_H8[6];
+				double vonMises, maxPrincipal;
+
+				for (unsigned int Ele = 0; Ele < NUME; Ele++)
+				{
+					CElement& Element = EleGrp[Ele];
+					Element.ElementStress(stress_H8, Displacement);
+
+					vonMises = sqrt(0.5 * (pow(stress_H8[0] - stress_H8[1], 2) +
+						pow(stress_H8[1] - stress_H8[2], 2) +
+						pow(stress_H8[2] - stress_H8[0], 2) +
+						6 * (pow(stress_H8[3], 2) + pow(stress_H8[4], 2) + pow(stress_H8[5], 2))));
+
+					double meanStress = (stress_H8[0] + stress_H8[1] + stress_H8[2]) / 3.0;
+					double shearNorm = sqrt(pow(stress_H8[0] - meanStress, 2) +
+						pow(stress_H8[1] - meanStress, 2) +
+						pow(stress_H8[2] - meanStress, 2) +
+						2 * (pow(stress_H8[3], 2) + pow(stress_H8[4], 2) + pow(stress_H8[5], 2)));
+					maxPrincipal = meanStress + shearNorm;
+
+					*this << setw(5) << Ele + 1
+						<< setw(18) << vonMises
+						<< setw(18) << maxPrincipal << endl;
+				}
+				*this << endl;
+				break;
+				
 			default: // Invalid element type
 				cerr << "*** Error *** Elment type " << ElementType
 					<< " has not been implemented.\n\n";

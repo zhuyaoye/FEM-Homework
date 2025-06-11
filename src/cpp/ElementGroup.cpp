@@ -74,6 +74,10 @@ void CElementGroup::CalculateMemberSize()
             ElementSize_ = sizeof(CB31); //CSJ
             MaterialSize_ = sizeof(CB31Material); //CSJ
             break; //CSJ
+        case ElementTypes::H8:
+            ElementSize_ = sizeof(C3D8);
+            MaterialSize_ = sizeof(C3D8Material);
+            break;
         default:
             std::cerr << "Type " << ElementType_ << " not available. See CElementGroup::CalculateMemberSize." << std::endl;
             exit(5);
@@ -95,6 +99,9 @@ void CElementGroup::AllocateElements(std::size_t size)
         case ElementTypes::Beam: //CSJ
             ElementList_ = new CB31[size]; //CSJ
             break; //CSJ
+        case ElementTypes::H8:
+            ElementList_ = new C3D8[size];
+            break;
         default:
             std::cerr << "Type " << ElementType_ << " not available. See CElementGroup::AllocateElement." << std::endl;
             exit(5);
@@ -115,6 +122,9 @@ void CElementGroup::AllocateMaterials(std::size_t size)
         case ElementTypes::Beam: //CSJ
             MaterialList_ = new CB31Material[size]; //CSJ
             break; //CSJ
+        case ElementTypes::H8:
+            MaterialList_ = new C3D8Material[size];
+            break;
         default:
             std::cerr << "Type " << ElementType_ << " not available. See CElementGroup::AllocateMaterial." << std::endl;
             exit(5);
