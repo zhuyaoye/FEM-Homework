@@ -6124,6 +6124,8 @@ CMakeFiles/stap++.dir/cpp/Domain.cpp.o: /Users/zhuyaoye/Documents/FEM-Homework/s
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/stdarg.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/stddef.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/stdint.h \
+  /Users/zhuyaoye/Documents/FEM-Homework/src/h/B31.h \
+  /Users/zhuyaoye/Documents/FEM-Homework/src/h/B31Material.h \
   /Users/zhuyaoye/Documents/FEM-Homework/src/h/Bar.h \
   /Users/zhuyaoye/Documents/FEM-Homework/src/h/CKirchhoffPlate.h \
   /Users/zhuyaoye/Documents/FEM-Homework/src/h/Domain.h \
@@ -7229,6 +7231,8 @@ CMakeFiles/stap++.dir/cpp/ElementGroup.cpp.o: /Users/zhuyaoye/Documents/FEM-Home
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/stdarg.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/stddef.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/stdint.h \
+  /Users/zhuyaoye/Documents/FEM-Homework/src/h/B31.h \
+  /Users/zhuyaoye/Documents/FEM-Homework/src/h/B31Material.h \
   /Users/zhuyaoye/Documents/FEM-Homework/src/h/Bar.h \
   /Users/zhuyaoye/Documents/FEM-Homework/src/h/CKirchhoffPlate.h \
   /Users/zhuyaoye/Documents/FEM-Homework/src/h/Domain.h \
@@ -11123,6 +11127,8 @@ CMakeFiles/stap++.dir/cpp/Outputter.cpp.o: /Users/zhuyaoye/Documents/FEM-Homewor
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/stdarg.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/stddef.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include/stdint.h \
+  /Users/zhuyaoye/Documents/FEM-Homework/src/h/B31.h \
+  /Users/zhuyaoye/Documents/FEM-Homework/src/h/B31Material.h \
   /Users/zhuyaoye/Documents/FEM-Homework/src/h/Bar.h \
   /Users/zhuyaoye/Documents/FEM-Homework/src/h/CKirchhoffPlate.h \
   /Users/zhuyaoye/Documents/FEM-Homework/src/h/Domain.h \

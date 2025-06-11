@@ -19,6 +19,9 @@
 #include "CKirchhoffPlate.h"
 #include "PlateMaterial.h"
 
+#include "B31.h" // CSJ
+#include "B31Material.h" //CSJ
+
 using namespace std;
 
 //! Define set of element types

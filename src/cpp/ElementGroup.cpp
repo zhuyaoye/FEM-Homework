@@ -70,6 +70,10 @@ void CElementGroup::CalculateMemberSize()
             ElementSize_ = sizeof(CKirchhoffPlate);
             MaterialSize_ = sizeof(CPlateMaterial);
             break;
+        case ElementTypes::Beam: //CSJ
+            ElementSize_ = sizeof(CB31); //CSJ
+            MaterialSize_ = sizeof(CB31Material); //CSJ
+            break; //CSJ
         default:
             std::cerr << "Type " << ElementType_ << " not available. See CElementGroup::CalculateMemberSize." << std::endl;
             exit(5);
@@ -88,6 +92,9 @@ void CElementGroup::AllocateElements(std::size_t size)
         case ElementTypes::Plate:
             ElementList_ = new CKirchhoffPlate[size];
             break;
+        case ElementTypes::Beam: //CSJ
+            ElementList_ = new CB31[size]; //CSJ
+            break; //CSJ
         default:
             std::cerr << "Type " << ElementType_ << " not available. See CElementGroup::AllocateElement." << std::endl;
             exit(5);
@@ -105,6 +112,9 @@ void CElementGroup::AllocateMaterials(std::size_t size)
         case ElementTypes::Plate:
             MaterialList_ = new CPlateMaterial[size];
             break;
+        case ElementTypes::Beam: //CSJ
+            MaterialList_ = new CB31Material[size]; //CSJ
+            break; //CSJ
         default:
             std::cerr << "Type " << ElementType_ << " not available. See CElementGroup::AllocateMaterial." << std::endl;
             exit(5);

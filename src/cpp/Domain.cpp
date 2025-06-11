@@ -13,7 +13,7 @@
 #include "PlateMaterial.h"
 
 using namespace std;
-
+#include "B31Material.h" // CSJ
 
 
 CDomain* CDomain::_instance = nullptr;

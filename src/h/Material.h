@@ -12,6 +12,7 @@
 
 #include "Outputter.h"
 #include <Eigen/Dense>
+
 using namespace std;
 
 //!	Material base class which only define one data member

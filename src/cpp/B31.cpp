@@ -4,6 +4,10 @@
 #include <iomanip>
 #include <cmath>
 
+#include <fstream>
+#include <sstream>
+#include <string>
+
 using namespace std;
 
 // Constructor
@@ -20,28 +24,37 @@ CB31::CB31()
 CB31::~CB31()
 {
 }
+
 bool CB31::Read(ifstream& Input, CMaterial* MaterialSets, CNode* NodeList)
 {
     unsigned int N1, N2, MSet;
-    Input >> N1 >> N2 >> MSet;
-
+    std::string line;
+    if (!std::getline(Input, line))
+        return false;  // 文件结束或读取失败
+    
+    std::istringstream iss(line);
+    
+    if (!(iss >> N1 >> N2 >> MSet))
+        return false;  // 读取节点和材料集失败
+    
     nodes_[0] = &NodeList[N1 - 1];
     nodes_[1] = &NodeList[N2 - 1];
-    ElementMaterial_ = dynamic_cast<CB31Material*>(MaterialSets + MSet - 1);
 
-    // Try to read optional up vector
+    ElementMaterial_ = dynamic_cast<CB31Material*>(MaterialSets) + MSet - 1;
+
+    // 检查是否有额外数据用于up向量
     double upx, upy, upz;
-    if (Input >> upx >> upy >> upz) {
+    if (iss >> upx >> upy >> upz) {
         UpVector_[0] = upx;
         UpVector_[1] = upy;
         UpVector_[2] = upz;
     } else {
-        // Default to global Z if not provided
+        // 没有提供up向量，使用默认值
         UpVector_[0] = 0.0;
         UpVector_[1] = 0.0;
         UpVector_[2] = 1.0;
     }
-
+    
     return true;
 }
 
@@ -56,7 +69,7 @@ void CB31::Write(COutputter& output)
 // Compute element stiffness matrix (12×12)
 void CB31::ElementStiffness(double* Matrix)
 {
-    clear(Matrix, SizeOfStiffnessMatrix());
+      clear(Matrix, SizeOfStiffnessMatrix());
 
     //	Calculate bar length
 	double DX[3];		//	dx = x2-x1, dy = y2-y1, dz = z2-z1
@@ -76,7 +89,7 @@ void CB31::ElementStiffness(double* Matrix)
     for(unsigned i =0; i < 3; i++)
         Z_direction[i] = UpVector_[i];
     
-    double L_Z = sqrt(Z_direction[0] * Z_direction[0] + Z_direction[1] * Z_direction[1]);
+    double L_Z = sqrt(Z_direction[0] * Z_direction[0] + Z_direction[1] * Z_direction[1] + + Z_direction[2] * Z_direction[2]);
 
     for(unsigned i =0; i < 3; i++)
         Z_direction[i] = Z_direction[i]/L_Z;
@@ -87,21 +100,31 @@ void CB31::ElementStiffness(double* Matrix)
     double L20 = Z_direction[0];
     double L21 = Z_direction[1];
     double L22 = Z_direction[2];
+
+    double DOT;
+    DOT = L00*L20 + L01*L21 + L02*L22;
+
+    if(DOT != 0)
+    {
+        cerr << "The direction of top surface or the coordinate of certain node is wrong" << endl;
+        exit(EXIT_FAILURE);
+    }
+
     double L10 = L21 * L02 - L22 * L01;
     double L11 = L22 * L00 - L20 * L02;
     double L12 = L20 * L01 - L21 * L00;
 
     double Area = material_->A; //Area of the beam's section
-    double k1 = material_->E * Area / L / L2; // Coefficient of axial tension and compression
+    double k1 = material_->E * Area / L; // Coefficient of axial tension and compression
 
     double G = material_->E / 2 / (1 + material_->nu); //  Calculate the Shear Modulus
     double J = material_->J;  // Polar moment of inertia
-    double k2 = G * J / L / L2;  // Coefficient of torsional stiffness
+    double k2 = G * J / L;  // Coefficient of torsional stiffness
 
     double I_y = material_->Iy; // Calculate the moment of inertia of plate xOz
     double I_z = material_->Iz; // Calculate the moment of inertia of plate xOy
-    double k3 = material_->E * I_y / L3 / L2; // Coefficient of the beam bending in the y-direction
-    double k4 = material_->E * I_z / L3 / L2; // Coefficient of the beam bending in the z-direction
+    double k3 = material_->E * I_y / L3; // Coefficient of the beam bending in the y-direction
+    double k4 = material_->E * I_z / L3; // Coefficient of the beam bending in the z-direction
 
 
     // 列优先顺序，仅上半部分（含对角线）
@@ -275,7 +298,7 @@ void CB31::CalculateTransformationMatrix(double T[12][12])
 
     // Fill 12x12 T = block diagonal of R
     for (int i = 0; i < 4; ++i)
-    for (int j = 0; j < 3; ++j)
-    for (int k = 0; k < 3; ++k)
-        T[3*i + j][3*i + k] = R[j][k];
+        for (int j = 0; j < 3; ++j)
+            for (int k = 0; k < 3; ++k)
+                T[3*i + j][3*i + k] = R[j][k];
 }

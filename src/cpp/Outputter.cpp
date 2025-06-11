@@ -164,6 +164,9 @@ void COutputter::OutputElementInfo()
 			case ElementTypes::Plate:
 				OutputPlateElements(EleGrp);  // 👈 新增 Plate 元素输出函数
 				break;
+			case ElementTypes::Beam: // Beam element
+				OutputB31Elements(EleGrp);
+				break; // CSJ
 		    default:
 		        *this << ElementType << " has not been implemented yet." << endl;
 		        break;
@@ -257,6 +260,51 @@ void COutputter::OutputPlateElements(unsigned int EleGrp)
     }
 
     *this << endl;
+}
+//	Output beam element data // CSJ
+void COutputter::OutputB31Elements(unsigned int EleGrp)
+{
+	CDomain* FEMData = CDomain::GetInstance();
+
+	CElementGroup& ElementGroup = FEMData->GetEleGrpList()[EleGrp];
+	unsigned int NUMMAT = ElementGroup.GetNUMMAT();
+
+	*this << " M A T E R I A L   D E F I N I T I O N" << endl
+		  << endl;
+	*this << " NUMBER OF DIFFERENT SETS OF MATERIAL" << endl;
+	*this << " AND CROSS-SECTIONAL  CONSTANTS  . . . .( NPAR(3) ) . . =" << setw(5) << NUMMAT
+		  << endl
+		  << endl;
+
+	*this << "  SET       YOUNG'S     POISSON'S     CROSS-SECTIONAL     Inertia     Inertia     Polar Inertia" << endl
+		  << " NUMBER     MODULUS       RATIO            AREA             I_y         I_z             J" << endl
+		  << "               E            NU               A                         		           " << endl;
+
+	*this << setiosflags(ios::scientific) << setprecision(5);
+
+	//	Loop over for all property sets
+	for (unsigned int mset = 0; mset < NUMMAT; mset++)
+    {
+        *this << setw(5) << mset+1;
+		ElementGroup.GetMaterial(mset).Write(*this);
+    }
+
+	*this << endl << endl
+		  << " E L E M E N T   I N F O R M A T I O N" << endl;
+    
+	*this << " ELEMENT     NODE     NODE       MATERIAL" << endl
+		  << " NUMBER-N      I        J       SET NUMBER" << endl;
+
+	unsigned int NUME = ElementGroup.GetNUME();
+
+	//	Loop over for all elements in group EleGrp
+	for (unsigned int Ele = 0; Ele < NUME; Ele++)
+    {
+        *this << setw(5) << Ele+1;
+		ElementGroup[Ele].Write(*this);
+    }
+
+	*this << endl;
 }
 
 //	Print load data
@@ -370,6 +418,8 @@ void COutputter::OutputElementStress()
 				*this << endl;
 
 				break;
+			case ElementTypes::Beam: //B31 Element
+				// Write your codes here
 			default: // Invalid element type
 				cerr << "*** Error *** Elment type " << ElementType
 					<< " has not been implemented.\n\n";

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Element.h"
+#include "B31Material.h"
 
 //! B31 Beam element class
 class CB31 : public CElement

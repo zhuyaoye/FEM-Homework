@@ -14,6 +14,8 @@
 #include "Clock.h"
 #include "CKirchhoffPlate.h"
 
+#include "B31.h" // CSJ
+
 using namespace std;
 
 int main(int argc, char *argv[])
