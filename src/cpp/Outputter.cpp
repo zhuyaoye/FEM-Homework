@@ -166,12 +166,16 @@ void COutputter::OutputElementInfo()
 				break;
 			case ElementTypes::Beam: // Beam element
 				OutputB31Elements(EleGrp);
-				break; // CSJ
+				break; 
+			case ElementTypes::H8: 
+				OutputH8Elements(EleGrp);
+				break; 
 		    default:
 		        *this << ElementType << " has not been implemented yet." << endl;
 		        break;
 		}
 	}
+	
 }
 //	Output bar element data
 void COutputter::OutputBarElements(unsigned int EleGrp)
@@ -465,9 +469,10 @@ void COutputter::OutputElementStress()
 
 				break;
 			case ElementTypes::Beam: //B31 Element
-				// Write your codes here
+				
+				break;
 
-						case ElementTypes::H8:
+			case ElementTypes::H8:
 				*this << "  ELEMENT       VON MISES STRESS    PRINCIPAL STRESS (MAX)" << endl
 					<< "  NUMBER" << endl;
 

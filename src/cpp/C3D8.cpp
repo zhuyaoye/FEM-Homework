@@ -144,9 +144,11 @@ void C3D8::ElementStress(double stress[], double* Displacement)
     // Strain = B * U
     double strain[6] = {0.0};
     for(int i=0; i<6; i++) {
-        for(int j=0; j<24; j++) {
-            if (LocationMatrix_[j])
-                strain[i] += B[i][j] * Displacement[LocationMatrix_[j]-1];
+        for(int j=0; j<8; j++) {
+            for (int k = 0; k < 3; k++) {
+                if (LocationMatrix_[6 * j + k])
+                    strain[i] += B[i][3 * j + k] * Displacement[LocationMatrix_[6 * j + k] - 1];
+            }
         }
     }
     

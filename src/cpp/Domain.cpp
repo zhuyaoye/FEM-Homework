@@ -240,6 +240,7 @@ void CDomain::CalculateColumnHeights()
 void CDomain::AllocateMatrices()
 {
     //    Allocate for global force/displacement vector
+	
     Force = new double[NEQ];
     
     //  Create the banded stiffness matrix

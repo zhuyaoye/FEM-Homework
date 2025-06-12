@@ -51,8 +51,8 @@ bool CB31::Read(ifstream& Input, CMaterial* MaterialSets, CNode* NodeList)
     } else {
         // 没有提供up向量，使用默认值
         UpVector_[0] = 0.0;
-        UpVector_[1] = 0.0;
-        UpVector_[2] = 1.0;
+        UpVector_[1] = 1.0;
+        UpVector_[2] = 0.0;
     }
     
     return true;
@@ -85,24 +85,27 @@ void CB31::ElementStiffness(double* Matrix)
 	CB31Material* material_ = dynamic_cast<CB31Material*>(ElementMaterial_);	// Pointer to material of the element
 
     // Calculate the coordinate transformation matrix
-    double Z_direction[3];
+    double Y_direction[3];
     for(unsigned i =0; i < 3; i++)
-        Z_direction[i] = UpVector_[i];
+        Y_direction[i] = UpVector_[i];
     
-    double L_Z = sqrt(Z_direction[0] * Z_direction[0] + Z_direction[1] * Z_direction[1] + + Z_direction[2] * Z_direction[2]);
+    double L_Y = sqrt(Y_direction[0] * Y_direction[0] + Y_direction[1] * Y_direction[1] + Y_direction[2] * Y_direction[2]);
 
     for(unsigned i =0; i < 3; i++)
-        Z_direction[i] = Z_direction[i]/L_Z;
+        Y_direction[i] = Y_direction[i]/L_Y;
     
     double L00 = DX[0]/L;
     double L01 = DX[1]/L;
     double L02 = DX[2]/L;
-    double L20 = Z_direction[0];
-    double L21 = Z_direction[1];
-    double L22 = Z_direction[2];
+    double L10 = Y_direction[0];
+    double L11 = Y_direction[1];
+    double L12 = Y_direction[2];
 
+    Direction_[0]=L00;
+    Direction_[1]=L01;
+    Direction_[2]=L02;
     double DOT;
-    DOT = L00*L20 + L01*L21 + L02*L22;
+    DOT = L00*L10 + L01*L11 + L02*L12;
 
     if(DOT != 0)
     {
@@ -110,9 +113,9 @@ void CB31::ElementStiffness(double* Matrix)
         exit(EXIT_FAILURE);
     }
 
-    double L10 = L21 * L02 - L22 * L01;
-    double L11 = L22 * L00 - L20 * L02;
-    double L12 = L20 * L01 - L21 * L00;
+    double L20 = L01 * L12 - L02 * L11;
+    double L21 = L02 * L10 - L00 * L12;
+    double L22 = L00 * L11 - L01 * L10;
 
     double Area = material_->A; //Area of the beam's section
     double k1 = material_->E * Area / L; // Coefficient of axial tension and compression
@@ -267,26 +270,26 @@ void CB31::CalculateTransformationMatrix(double T[12][12])
     // Use user-provided UpVector_ as reference vector
     double up[3] = {UpVector_[0], UpVector_[1], UpVector_[2]};
 
-    // y = up × x
-    double y[3] = {
-        up[1]*x[2] - up[2]*x[1],
-        up[2]*x[0] - up[0]*x[2],
-        up[0]*x[1] - up[1]*x[0]
+    // y = up × x z=x x up
+    double z[3] = {
+        x[1]*up[2] - x[2]*up[1],
+        x[2]*up[0] - x[0]*up[2],
+        x[0]*up[1] - x[1]*up[0]
     };
-
+    
     // Normalize y
-    double norm_y = sqrt(y[0]*y[0] + y[1]*y[1] + y[2]*y[2]);
-    if (norm_y < 1e-10) {
+    double norm_z = sqrt(z[0]*z[0] + z[1]*z[1] + z[2]*z[2]);
+    if (norm_z < 1e-10) {
         cerr << "Error: Up vector is parallel to beam axis. Cannot define local coordinate system." << endl;
         exit(-1);
     }
-    for (int i = 0; i < 3; ++i) y[i] /= norm_y;
+    for (int i = 0; i < 3; ++i) z[i] /= norm_z;
 
     // z = x × y
-    double z[3] = {
-        x[1]*y[2] - x[2]*y[1],
-        x[2]*y[0] - x[0]*y[2],
-        x[0]*y[1] - x[1]*y[0]
+    double y[3] = {
+        z[1]*x[2] - z[2]*x[1],
+        z[2]*x[0] - z[0]*x[2],
+        z[0]*x[1] - z[1]*x[0]
     };
 
     // Direction cosine matrix

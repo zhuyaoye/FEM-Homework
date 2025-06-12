@@ -28,16 +28,18 @@ bool CB31Material::Read(ifstream& Input)
 	// 		return false;
 	// 	}
 	// }
-
-	double H, B;
-	Input >> nset >> E >> nu >> A >> H >> B;
+	double H, B, t_H, t_B;
+	Input >> nset >> E >> nu >> A >> H >> B >> t_H >> t_B;
 	G= E / (2 * (1 + nu));
+	double H_in, B_in;
+	H_in = H - 2*t_H;
+	B_in = B - 2*t_B;
 	// 以矩形截面为例自动计算 Iy, Iz, J
-	Iy = B * pow(H, 3) / 12.0;
-	Iz = H * pow(B, 3) / 12.0;
+	Iy = B * pow(H, 3) / 12.0 - B_in * pow(H_in, 3) / 12.0;
+	Iz = H * pow(B, 3) / 12.0 - H_in * pow(B_in, 3) / 12.0;
 	//J = (B * pow(H, 3)) / 3.0; // 或者使用更合适的近似公式
 	double beta = B / H;
-	J = (B * pow(H, 3)) / 3.0 * (1.0 - 0.21 * beta * (1 - pow(beta, 4) / 12.0));
+	J = (B * pow(H, 3)) / 3.0 * (1.0 - 0.21 * beta * (1 - pow(beta, 4) / 12.0)) - (B_in * pow(H_in, 3)) / 3.0 * (1.0 - 0.21 * beta * (1 - pow(beta, 4) / 12.0));
 
 	double BHArea;
 	BHArea = B*H;
@@ -48,6 +50,7 @@ bool CB31Material::Read(ifstream& Input)
     }
 	return true;
 }
+
 
 //	Write material data to Stream
 void CB31Material::Write(COutputter& output)
